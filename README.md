@@ -1,0 +1,1 @@
+# web-data-extractor.user.js
