@@ -32,18 +32,21 @@ async function evalScript(text) {
   const loadingButtonClass = buttonClass + ' mpui-btn_loading';
   const list = document.getElementById('list');
   const container = document.getElementById('list_container');
-  const ele = document.createElement('div');
+  let ele = document.createElement('div');
   container.insertBefore(ele, list);
-  ele.outerHTML = `<div style="float: right;">
+  ele.outerHTML = `<div id="actions" style="float: right;">
                     <button id="startCrawl" class="${buttonClass}">开始抓取</button>
                     <button id="stopCrawl" class="${buttonClass}">停止</button>
-                    <a id="download" download="微信数据.csv" style="cursor: pointer">下载数据</a>
                   </div>`;
 
   let stop;
   Sugar.Date.setLocale('zh-CN');
   const startButton = document.getElementById('startCrawl');
   startButton.addEventListener('click', async () => {
+    let download = document.getElementById('download');
+    if (download) {
+      download.remove();
+    }
     stop = false;
     startButton.setAttribute('class', disabledButtonClass);
     startButton.disabled = true;
@@ -85,16 +88,22 @@ async function evalScript(text) {
     for (let article of sortedArticles) {
       csvData.push(article.join(delimiter) + newline);
     }
-    const download = document.getElementById('download');
     const blob = new Blob(csvData, {type: 'text/csv'});
-    download.setAttribute('href', window.URL.createObjectURL(blob));
+    ele = document.getElementById('actions');
+    download = document.createElement('a');
+    ele.appendChild(download);
+    download.outerHTML = `<a
+      id="download" href="${window.URL.createObjectURL(blob)}"
+      download="微信数据.csv">下载数据</a>`;
     startButton.setAttribute('class', buttonClass);
     startButton.disabled = false;
     stopButton.setAttribute('class', buttonClass);
   });
   const stopButton = document.getElementById('stopCrawl');
   stopButton.addEventListener('click', () => {
-    stop = true;
-    stopButton.setAttribute('class', loadingButtonClass);
+    if (!stop) {
+      stop = true;
+      stopButton.setAttribute('class', loadingButtonClass);
+    }
   })
 })();
