@@ -13,15 +13,15 @@
 // @require      https://cdn.bootcss.com/lodash.js/4.17.4/lodash.min.js
 // ==/UserScript==
 
+'use strict';
+
+async function evalScript(text) {
+  eval(`(function(){
+    ${text}
+  }).call(window)`);
+}
+
 (function() {
-  'use strict';
-
-  async function evalScript(text) {
-    eval(`(function(){
-      ${text}
-    }).call(window)`);
-  }
-
   const sugarScript = GM_getResourceText('sugar');
   evalScript(sugarScript);
   const sugarLocaleScript = GM_getResourceText('sugar-locale-zh');
@@ -62,13 +62,15 @@
         const articleElements = li.querySelectorAll('div.mpui-mass-list__media__content');
         for (let articleElement of articleElements) {
           const linkElement = articleElement.querySelector('a.mpui-mass-list__media__title');
-          const link = linkElement.getAttribute('href');
-          const title = linkElement.innerText;
-          const readNumElement = articleElement.querySelector('.mpui-data-overview__desc');
-          const readNum = readNumElement.innerText;
-          const uri = new URI(link);
-          const query = URI.parseQuery(uri.search());
-          data[query.chksm] = [title, readNum, date, link];
+          if (linkElement) {
+            const link = linkElement.getAttribute('href');
+            const title = linkElement.innerText;
+            const readNumElement = articleElement.querySelector('.mpui-data-overview__desc');
+            const readNum = readNumElement.innerText;
+            const uri = new URI(link);
+            const query = URI.parseQuery(uri.search());
+            data[query.chksm] = [title, readNum, date, link];
+          }
         }
       }
       const nextPage = document.querySelector('a.mpui-btn.mpui-btn_default.mpui-btn_mini:last-child');
