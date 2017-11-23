@@ -13,15 +13,15 @@
 // @require      https://cdn.bootcss.com/lodash.js/4.17.4/lodash.min.js
 // ==/UserScript==
 
-'use strict';
-
-async function evalScript(text) {
-  eval(`(function(){
-    ${text}
-  }).call(window)`);
-}
-
 (function() {
+  'use strict';
+
+  async function evalScript(text) {
+    eval(`(function(){
+      ${text}
+    }).call(window)`);
+  }
+
   const sugarScript = GM_getResourceText('sugar');
   evalScript(sugarScript);
   const sugarLocaleScript = GM_getResourceText('sugar-locale-zh');
