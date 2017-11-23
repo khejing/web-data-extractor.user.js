@@ -28,7 +28,8 @@ async function evalScript(text) {
   eval(sugarLocaleScript);
 
   const buttonClass = 'mpui-btn mpui-btn_primary';
-  const disabledButtonClass = buttonClass + 'mpui-btn_disabled';
+  const disabledButtonClass = buttonClass + ' mpui-btn_disabled';
+  const loadingButtonClass = buttonClass + ' mpui-btn_loading';
   const list = document.getElementById('list');
   const container = document.getElementById('list_container');
   const ele = document.createElement('div');
@@ -39,12 +40,14 @@ async function evalScript(text) {
                     <a id="download" download="微信数据.csv" style="cursor: pointer">下载数据</a>
                   </div>`;
 
-  let data = {}, stop;
+  let stop;
   Sugar.Date.setLocale('zh-CN');
   const startButton = document.getElementById('startCrawl');
   startButton.addEventListener('click', async () => {
+    stop = false;
     startButton.setAttribute('class', disabledButtonClass);
     startButton.disabled = true;
+    const data = {};
     while (true) {
       for (let li of document.querySelectorAll('li.mpui-list__item.mpui-mass-list__media')) {
         const dateElement = li.querySelector('.mpui-mass-list__media__time');
@@ -85,11 +88,13 @@ async function evalScript(text) {
     const download = document.getElementById('download');
     const blob = new Blob(csvData, {type: 'text/csv'});
     download.setAttribute('href', window.URL.createObjectURL(blob));
+    startButton.setAttribute('class', buttonClass);
+    startButton.disabled = false;
+    stopButton.setAttribute('class', buttonClass);
   });
   const stopButton = document.getElementById('stopCrawl');
   stopButton.addEventListener('click', () => {
     stop = true;
-    startButton.setAttribute('class', buttonClass);
-    startButton.disabled = false;
+    stopButton.setAttribute('class', loadingButtonClass);
   })
 })();
