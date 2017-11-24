@@ -88,7 +88,9 @@ async function evalScript(text) {
     const delimiter = ',';
     csvData.push(columns.join(delimiter) + newline);
     for (let article of sortedArticles) {
-      csvData.push(article.join(delimiter) + newline);
+      csvData.push(article
+        .map(e => '"' + e.replace(/"/g, '""').trim() + '"')
+        .join(delimiter) + newline);
     }
     const blob = new Blob(csvData, {type: 'text/csv'});
     ele = document.getElementById('actions');
