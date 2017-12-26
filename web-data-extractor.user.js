@@ -27,13 +27,13 @@ async function evalScript(text) {
   const sugarLocaleScript = GM_getResourceText('sugar-locale-zh');
   eval(sugarLocaleScript);
 
-  const buttonClass = 'mpui-btn mpui-btn_primary';
-  const disabledButtonClass = buttonClass + ' mpui-btn_disabled';
-  const loadingButtonClass = buttonClass + ' mpui-btn_loading';
-  const list = document.getElementById('list');
-  const container = document.getElementById('list_container');
+  const buttonClass = 'weui-desktop-btn weui-desktop-btn_primary';
+  const disabledButtonClass = buttonClass + ' weui-desktop-btn_disabled';
+  const loadingButtonClass = buttonClass + ' weui-desktop-btn_loading';
+  const title = document.querySelector('#list_container .weui-desktop-panel__title');
+  const header = document.querySelector('#list_container .weui-desktop-panel__hd');
   let ele = document.createElement('div');
-  container.insertBefore(ele, list);
+  header.insertBefore(ele, title);
   ele.outerHTML = `<div id="actions" style="float: right;">
                     <button id="startCrawl" class="${buttonClass}">开始抓取</button>
                     <button id="stopCrawl" class="${buttonClass}">停止</button>
@@ -52,20 +52,20 @@ async function evalScript(text) {
     startButton.disabled = true;
     const data = {};
     while (true) {
-      for (let li of document.querySelectorAll('li.mpui-list__item.mpui-mass-list__media')) {
-        const dateElement = li.querySelector('.mpui-mass-list__media__time');
+      for (let li of document.querySelectorAll('li.weui-desktop-mass__item')) {
+        const dateElement = li.querySelector('.weui-desktop-mass__time');
         let sugarRawDate = new Sugar.Date(Sugar.Date.create(dateElement.innerText));
         if (sugarRawDate.isAfter(new Sugar.Date()).raw) {
           sugarRawDate = sugarRawDate.rewind('7 days');
         }
         const date = sugarRawDate.short().raw;
-        const articleElements = li.querySelectorAll('div.mpui-mass-list__media__content');
+        const articleElements = li.querySelectorAll('div.weui-desktop-mass-appmsg__bd');
         for (let articleElement of articleElements) {
-          const linkElement = articleElement.querySelector('a.mpui-mass-list__media__title');
+          const linkElement = articleElement.querySelector('a.weui-desktop-mass-appmsg__title');
           if (linkElement) {
             const link = linkElement.getAttribute('href');
-            const title = linkElement.innerText;
-            const readNumElement = articleElement.querySelector('.mpui-data-overview__desc');
+            const title = linkElement.lastChild.wholeText.trim();
+            const readNumElement = articleElement.querySelector('.weui-desktop-mass-media__data__inner');
             const readNum = readNumElement.innerText;
             const uri = new URI(link);
             const query = URI.parseQuery(uri.search());
@@ -73,7 +73,7 @@ async function evalScript(text) {
           }
         }
       }
-      const nextPage = document.querySelector('a.mpui-btn.mpui-btn_default.mpui-btn_mini:last-child');
+      const nextPage = document.querySelector('a.weui-desktop-btn.weui-desktop-btn_default.weui-desktop-btn_mini:last-child');
       if (nextPage && !stop) {
         nextPage.click();
         await Promise.delay(3000);
