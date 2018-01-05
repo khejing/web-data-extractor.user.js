@@ -69,7 +69,7 @@ async function evalScript(text) {
             const readNum = readNumElement.innerText;
             const uri = new URI(link);
             const query = URI.parseQuery(uri.search());
-            data[query.chksm] = [title, readNum, date, link];
+            data[query.sn] = [title, readNum, date, link];
           }
         }
       }
