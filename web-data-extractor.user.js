@@ -30,11 +30,11 @@ async function evalScript(text) {
   const buttonClass = 'weui-desktop-btn weui-desktop-btn_primary';
   const disabledButtonClass = buttonClass + ' weui-desktop-btn_disabled';
   const loadingButtonClass = buttonClass + ' weui-desktop-btn_loading';
-  const title = document.querySelector('#list_container .weui-desktop-panel__title');
-  const header = document.querySelector('#list_container .weui-desktop-panel__hd');
+  const title = document.querySelector('#list_container .weui-desktop-search');
+  const header = document.querySelector('#list_container .weui-desktop-global__extra');
   let ele = document.createElement('div');
   header.insertBefore(ele, title);
-  ele.outerHTML = `<div id="actions" style="float: right;">
+  ele.outerHTML = `<div id="actions" style="float: right;margin-left: 15px">
                     <button id="startCrawl" class="${buttonClass}">开始抓取</button>
                     <button id="stopCrawl" class="${buttonClass}">停止</button>
                   </div>`;
@@ -64,7 +64,7 @@ async function evalScript(text) {
           const linkElement = articleElement.querySelector('a.weui-desktop-mass-appmsg__title');
           if (linkElement) {
             const link = linkElement.getAttribute('href');
-            const title = linkElement.lastChild.wholeText.trim();
+            const title = linkElement.lastChild.firstChild.wholeText.trim();
             const readNumElement = articleElement.querySelector('.weui-desktop-mass-media__data__inner');
             const readNum = readNumElement.innerText;
             const uri = new URI(link);
